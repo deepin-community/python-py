@@ -1,4 +1,3 @@
-From f4ed62ad39f289d09b3efdfed7305f935ce60bfc Mon Sep 17 00:00:00 2001
 From: Stanislav Levin <slev@altlinux.org>
 Date: Tue, 4 Jun 2019 14:33:36 +0300
 Subject: [PATCH] Fix Pytest4.x compatibility errors
@@ -19,28 +18,30 @@ Removed in version 4.0.
 Fixes: https://github.com/pytest-dev/py/issues/209
 Signed-off-by: Stanislav Levin <slev@altlinux.org>
 ---
- doc/faq.txt                                  | 14 -------------
+ doc/faq.txt                                  | 14 --------------
  testing/code/test_assertion.py               |  9 +++------
  testing/code/test_code.py                    |  3 ++-
- testing/code/test_excinfo.py                 | 12 ++++++-----
- testing/code/test_source.py                  | 18 ++++++++---------
- testing/io_/test_capture.py                  | 15 +++++++++-----
- testing/io_/test_terminalwriter.py           | 17 ++++++++--------
+ testing/code/test_excinfo.py                 | 12 +++++++-----
+ testing/code/test_source.py                  | 18 +++++++++---------
+ testing/io_/test_capture.py                  | 15 ++++++++++-----
+ testing/io_/test_terminalwriter.py           | 17 ++++++++---------
  testing/io_/test_terminalwriter_linewidth.py |  6 ++++++
  testing/log/test_log.py                      |  6 ++++--
  testing/path/common.py                       |  7 ++++---
- testing/path/conftest.py                     | 16 +++++++--------
+ testing/path/conftest.py                     | 16 ++++++++--------
  testing/path/test_cacheutil.py               |  6 ++++--
  testing/path/test_svnauth.py                 |  6 ++++--
- testing/path/test_svnurl.py                  | 21 +++++++++++++-------
- testing/path/test_svnwc.py                   | 17 ++++++++++------
+ testing/path/test_svnurl.py                  | 21 ++++++++++++++-------
+ testing/path/test_svnwc.py                   | 17 +++++++++++------
  testing/root/test_builtin.py                 |  6 ++++--
  testing/root/test_std.py                     |  3 ++-
  17 files changed, 100 insertions(+), 82 deletions(-)
 
+diff --git a/doc/faq.txt b/doc/faq.txt
+index 6d374e1..bf8ce8d 100644
 --- a/doc/faq.txt
 +++ b/doc/faq.txt
-@@ -98,20 +98,6 @@
+@@ -98,20 +98,6 @@ in a managed class/module/function scope.
  .. _`xUnit style setup`: test/xunit_setup.html
  .. _`pytest_nose`: test/plugin/nose.html
  
@@ -61,9 +62,11 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
  .. _`Convention over Configuration`: https://en.wikipedia.org/wiki/Convention_over_configuration
  
  Can I yield multiple values from a factory function?
+diff --git a/testing/code/test_assertion.py b/testing/code/test_assertion.py
+index e2a7f90..4cb39fe 100644
 --- a/testing/code/test_assertion.py
 +++ b/testing/code/test_assertion.py
-@@ -18,15 +18,12 @@
+@@ -18,15 +18,12 @@ def test_assert():
  
  
  def test_assert_within_finally():
@@ -82,9 +85,11 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
  
  def test_assert_multiline_1():
      try:
+diff --git a/testing/code/test_code.py b/testing/code/test_code.py
+index 28ec628..65328bb 100644
 --- a/testing/code/test_code.py
 +++ b/testing/code/test_code.py
-@@ -18,7 +18,8 @@
+@@ -18,7 +18,8 @@ def test_code_gives_back_name_for_not_existing_file():
  def test_code_with_class():
      class A:
          pass
@@ -94,9 +99,11 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
  
  if True:
      def x():
+diff --git a/testing/code/test_excinfo.py b/testing/code/test_excinfo.py
+index c148ab8..05ec3d9 100644
 --- a/testing/code/test_excinfo.py
 +++ b/testing/code/test_excinfo.py
-@@ -145,7 +145,8 @@
+@@ -145,7 +145,8 @@ class TestTraceback_f_g_h:
  
      def test_traceback_cut_excludepath(self, testdir):
          p = testdir.makepyfile("def f(): raise ValueError")
@@ -106,7 +113,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
          basedir = py.path.local(py.test.__file__).dirpath()
          newtraceback = excinfo.traceback.cut(excludepath=basedir)
          for x in newtraceback:
-@@ -273,8 +274,8 @@
+@@ -273,8 +274,8 @@ def test_tbentry_reinterpret():
  def test_excinfo_exconly():
      excinfo = py.test.raises(ValueError, h)
      assert excinfo.exconly().startswith('ValueError')
@@ -117,7 +124,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
      msg = excinfo.exconly(tryshort=True)
      assert msg.startswith('ValueError')
      assert msg.endswith("world")
-@@ -350,10 +351,11 @@
+@@ -350,10 +351,11 @@ def test_codepath_Queue_example():
  
  
  class TestFormattedExcinfo:
@@ -131,9 +138,11 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
              modpath = tmpdir.join("mod.py")
              tmpdir.ensure("__init__.py")
              modpath.write(source)
+diff --git a/testing/code/test_source.py b/testing/code/test_source.py
+index ca9a422..b4bf1c7 100644
 --- a/testing/code/test_source.py
 +++ b/testing/code/test_source.py
-@@ -272,7 +272,8 @@
+@@ -272,7 +272,8 @@ class TestSourceParsingAndCompiling:
          co = self.source.compile()
          py.builtin.exec_(co, globals())
          f(7)
@@ -143,7 +152,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
          frame = excinfo.traceback[-1].frame
          stmt = frame.code.fullsource.getstatement(frame.lineno)
          #print "block", str(block)
-@@ -326,14 +327,13 @@
+@@ -326,14 +327,13 @@ def test_getstartingblock_multiline():
  
  def test_getline_finally():
      def c(): pass
@@ -165,6 +174,8 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
      source = excinfo.traceback[-1].statement
      assert str(source).strip() == 'c(1)'
  
+diff --git a/testing/io_/test_capture.py b/testing/io_/test_capture.py
+index b5fedd0..652c8b7 100644
 --- a/testing/io_/test_capture.py
 +++ b/testing/io_/test_capture.py
 @@ -1,6 +1,7 @@
@@ -175,7 +186,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
  import py
  
  needsdup = py.test.mark.skipif("not hasattr(os, 'dup')")
-@@ -45,7 +46,8 @@
+@@ -45,7 +46,8 @@ class TestTextIO:
          f = py.io.TextIO()
          if sys.version_info >= (3,0):
              f.write("\u00f6")
@@ -185,7 +196,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
          else:
              f.write(unicode("\u00f6", 'UTF-8'))
              f.write("hello") # bytes
-@@ -56,7 +58,8 @@
+@@ -56,7 +58,8 @@ class TestTextIO:
  def test_bytes_io():
      f = py.io.BytesIO()
      f.write(tobytes("hello"))
@@ -195,7 +206,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
      s = f.getvalue()
      assert s == tobytes("hello")
  
-@@ -70,8 +73,9 @@
+@@ -70,8 +73,9 @@ def test_dontreadfrominput():
      py.test.raises(ValueError, f.fileno)
      f.close() # just for completeness
  
@@ -207,7 +218,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
      f = testdir.makepyfile("").open('wb+')
      request.addfinalizer(f.close)
      return f
-@@ -315,7 +319,8 @@
+@@ -315,7 +319,8 @@ class TestStdCapture:
          print ("XXX which indicates an error in the underlying capturing")
          print ("XXX mechanisms")
          cap = self.getcapture()
@@ -217,9 +228,11 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
          out, err = cap.reset()
  
      def test_suspend_resume(self):
+diff --git a/testing/io_/test_terminalwriter.py b/testing/io_/test_terminalwriter.py
+index 44b4f1d..f26f6bd 100644
 --- a/testing/io_/test_terminalwriter.py
 +++ b/testing/io_/test_terminalwriter.py
-@@ -107,14 +107,11 @@
+@@ -107,14 +107,11 @@ def test_unicode_on_file_with_ascii_encoding(tmpdir, monkeypatch, encoding):
  
  win32 = int(sys.platform == "win32")
  class TestTerminalWriter:
@@ -238,7 +251,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
              p = tmpdir.join("tmpfile")
              f = codecs.open(str(p), 'w+', encoding='utf8')
              tw = py.io.TerminalWriter(f)
-@@ -182,8 +179,10 @@
+@@ -182,8 +179,10 @@ class TestTerminalWriter:
              for color in ("red", "green"):
                  text2 = tw.markup("hello", **{color: True, 'bold': bold})
                  assert text2.find("hello") != -1
@@ -251,6 +264,8 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
  
      def test_line_write_markup(self, tw):
          tw.hasmarkup = True
+diff --git a/testing/io_/test_terminalwriter_linewidth.py b/testing/io_/test_terminalwriter_linewidth.py
+index e6d84fb..1fe2810 100644
 --- a/testing/io_/test_terminalwriter_linewidth.py
 +++ b/testing/io_/test_terminalwriter_linewidth.py
 @@ -1,6 +1,8 @@
@@ -262,7 +277,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
  from py._io.terminalwriter import TerminalWriter
  
  
-@@ -31,6 +33,10 @@
+@@ -31,6 +33,10 @@ def test_terminal_writer_line_width_update_with_wide_text():
      assert tw.width_of_current_line == 21  # 5*2 + 1 + 5*2
  
  
@@ -273,9 +288,11 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
  def test_terminal_writer_line_width_update_with_wide_bytes():
      tw = TerminalWriter()
      tw.write('乇乂ㄒ尺卂 ㄒ卄丨匚匚'.encode('utf-8'))
+diff --git a/testing/log/test_log.py b/testing/log/test_log.py
+index 5c706d9..ebf1270 100644
 --- a/testing/log/test_log.py
 +++ b/testing/log/test_log.py
-@@ -89,8 +89,10 @@
+@@ -89,8 +89,10 @@ class TestLogConsumer:
  
      def test_no_auto_producer(self):
          p = py.log.Producer('x')
@@ -288,9 +305,11 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
  
      def test_setconsumer_with_producer(self):
          l = []
+diff --git a/testing/path/common.py b/testing/path/common.py
+index d69a1c3..1455822 100644
 --- a/testing/path/common.py
 +++ b/testing/path/common.py
-@@ -155,8 +155,8 @@
+@@ -155,8 +155,8 @@ class CommonFSTests(object):
          l = path1.listdir()
          assert path1.join('sampledir') in l
          assert path1.join('samplefile') in l
@@ -301,7 +320,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
  
      def test_listdir_fnmatchstring(self, path1):
          l = path1.listdir('s*dir')
-@@ -300,7 +300,8 @@
+@@ -300,7 +300,8 @@ class CommonFSTests(object):
          assert url.mtime() > 0
  
      def test_relto_wrong_type(self, path1):
@@ -311,6 +330,8 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
  
      def test_load(self, path1):
          p = path1.join('samplepickle')
+diff --git a/testing/path/conftest.py b/testing/path/conftest.py
+index 84fb5c8..015bd03 100644
 --- a/testing/path/conftest.py
 +++ b/testing/path/conftest.py
 @@ -1,20 +1,19 @@
@@ -339,7 +360,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
      for x in ('test_remove', 'test_move', 'test_status_deleted'):
          if request.function.__name__.startswith(x):
              #print >>sys.stderr, ("saving repo", repo, "for", request.function)
-@@ -22,8 +21,9 @@
+@@ -22,8 +21,9 @@ def pytest_funcarg__repowc1(request):
              request.addfinalizer(lambda: restore_repowc(_savedrepowc))
      return repo, repourl, wc
  
@@ -351,9 +372,11 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
      name = request.function.__name__
      repo, url, wc = getrepowc(tmpdir, "%s-repo-2" % name, "%s-wc-2" % name)
      return repo, url, wc
+diff --git a/testing/path/test_cacheutil.py b/testing/path/test_cacheutil.py
+index c9fc074..76023a0 100644
 --- a/testing/path/test_cacheutil.py
 +++ b/testing/path/test_cacheutil.py
-@@ -12,12 +12,14 @@
+@@ -12,12 +12,14 @@ class BasicCacheAPITest:
          assert val == 42
  
      def test_cache_get_key_error(self):
@@ -370,9 +393,11 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
  
      def test_delentry_raising(self):
          self.cache.getorbuild(100, lambda: 100)
+diff --git a/testing/path/test_svnauth.py b/testing/path/test_svnauth.py
+index 654f033..d24028d 100644
 --- a/testing/path/test_svnauth.py
 +++ b/testing/path/test_svnauth.py
-@@ -2,6 +2,7 @@
+@@ -2,6 +2,7 @@ import py
  from py.path import SvnAuth
  import time
  import sys
@@ -380,7 +405,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
  
  svnbin = py.path.local.sysfind('svn')
  
-@@ -261,7 +262,8 @@
+@@ -261,7 +262,8 @@ class TestSvnURLAuth(object):
          u.propget('foo')
          assert '--username="foo" --password="bar"' in u.commands[0]
  
@@ -390,7 +415,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
      return Setup(request)
  
  class Setup:
-@@ -271,7 +273,7 @@
+@@ -271,7 +273,7 @@ class Setup:
          if not request.config.option.runslowtests:
              py.test.skip('use --runslowtests to run these tests')
  
@@ -399,9 +424,11 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
          repodir = tmpdir.join("repo")
          py.process.cmdexec('svnadmin create %s' % repodir)
          if sys.platform == 'win32':
+diff --git a/testing/path/test_svnurl.py b/testing/path/test_svnurl.py
+index 15fbea5..7cea4f2 100644
 --- a/testing/path/test_svnurl.py
 +++ b/testing/path/test_svnurl.py
-@@ -2,10 +2,12 @@
+@@ -2,10 +2,12 @@ import py
  from py._path.svnurl import InfoSvnCommand
  import datetime
  import time
@@ -416,7 +443,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
      return py.path.svnurl(repourl)
  
  class TestSvnURLCommandPath(CommonSvnTests):
-@@ -20,10 +22,12 @@
+@@ -20,10 +22,12 @@ class TestSvnURLCommandPath(CommonSvnTests):
          super(TestSvnURLCommandPath, self).test_visit_ignore(path1)
  
      def test_svnurl_needs_arg(self, path1):
@@ -431,7 +458,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
  
      def test_svnurl_characters_simple(self, path1):
          py.path.svnurl("svn+ssh://hello/world")
-@@ -32,7 +36,8 @@
+@@ -32,7 +36,8 @@ class TestSvnURLCommandPath(CommonSvnTests):
          py.path.svnurl("http://user@host.com/some/dir")
  
      def test_svnurl_characters_at_path(self, path1):
@@ -441,7 +468,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
  
      def test_svnurl_characters_colon_port(self, path1):
          py.path.svnurl("http://host.com:8080/some/dir")
-@@ -45,7 +50,8 @@
+@@ -45,7 +50,8 @@ class TestSvnURLCommandPath(CommonSvnTests):
          # colons are allowed on win32, because they're part of the drive
          # part of an absolute path... however, they shouldn't be allowed in
          # other parts, I think
@@ -451,16 +478,18 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
  
      def test_export(self, path1, tmpdir):
          tmpdir = tmpdir.join("empty")
-@@ -92,4 +98,5 @@
+@@ -92,4 +98,5 @@ class TestSvnInfoCommand:
          assert info.kind == 'dir'
  
  def test_badchars():
 -    py.test.raises(ValueError, "py.path.svnurl('http://host/tmp/@@@:')")
 +    with py.test.raises(ValueError):
 +        py.path.svnurl('http://host/tmp/@@@:')
+diff --git a/testing/path/test_svnwc.py b/testing/path/test_svnwc.py
+index c643d99..25a3650 100644
 --- a/testing/path/test_svnwc.py
 +++ b/testing/path/test_svnwc.py
-@@ -30,8 +30,9 @@
+@@ -30,8 +30,9 @@ def test_make_repo(path1, tmpdir):
      rev = wc.commit()
      assert rev is None
  
@@ -472,7 +501,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
      return wc
  
  class TestWCSvnCommandPath(CommonSvnTests):
-@@ -346,7 +347,8 @@
+@@ -346,7 +347,8 @@ class TestWCSvnCommandPath(CommonSvnTests):
          somefile = root.join('somefile')
          somefile.ensure(file=True)
          # not yet added to repo
@@ -482,7 +511,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
          somefile.write('foo')
          somefile.commit('test')
          assert somefile.check(versioned=True)
-@@ -357,13 +359,15 @@
+@@ -357,13 +359,15 @@ class TestWCSvnCommandPath(CommonSvnTests):
              assert locked[0].basename == somefile.basename
              assert locked[0].dirpath().basename == somefile.dirpath().basename
              #assert somefile.locked()
@@ -500,7 +529,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
          somefile.remove()
  
      def test_commit_nonrecursive(self, path1):
-@@ -481,7 +485,8 @@
+@@ -481,7 +485,8 @@ class TestInfoSvnWCCommand:
  
  
  def test_characters_at():
@@ -510,9 +539,11 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
  
  def test_characters_tilde():
      py.path.svnwc('/tmp/test~')
+diff --git a/testing/root/test_builtin.py b/testing/root/test_builtin.py
+index 287c60d..b2881de 100644
 --- a/testing/root/test_builtin.py
 +++ b/testing/root/test_builtin.py
-@@ -56,7 +56,8 @@
+@@ -56,7 +56,8 @@ def test_frozenset():
  
  def test_print_simple():
      from py.builtin import print_
@@ -522,7 +553,7 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
      f = py.io.TextIO()
      print_("hello", "world", file=f)
      s = f.getvalue()
-@@ -133,7 +134,8 @@
+@@ -133,7 +134,8 @@ def test_reraise():
          raise Exception()
      except Exception:
          cls, val, tb = sys.exc_info()
@@ -532,9 +563,11 @@ Signed-off-by: Stanislav Levin <slev@altlinux.org>
  
  def test_exec():
      l = []
+diff --git a/testing/root/test_std.py b/testing/root/test_std.py
+index 143556a..dca0c67 100644
 --- a/testing/root/test_std.py
 +++ b/testing/root/test_std.py
-@@ -6,7 +6,8 @@
+@@ -6,7 +6,8 @@ def test_os():
      assert py.std.os is os
  
  def test_import_error_converts_to_attributeerror():
